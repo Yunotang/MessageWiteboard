@@ -18,17 +18,12 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 主網站建置來源為 v2/（v1/ 僅保留原始碼存檔，不部署）
-    defaults:
-      run:
-        working-directory: v2
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: v2/package-lock.json
       - run: npm ci
       - name: Build
         env:
@@ -38,7 +33,7 @@ jobs:
         run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: v2/dist
+          path: dist
 
   deploy:
     needs: build

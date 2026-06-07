@@ -1,8 +1,11 @@
+# 適用於 v1/ 與 v2/ 等所有子目錄（無前導斜線的樣式會比對任何層級）
 node_modules/
 build/
 dist/
 coverage/
 .DS_Store
 *.log
+
+# 機敏資料：環境變數一律不上傳，僅保留範例檔
 .env*
 !.env.example

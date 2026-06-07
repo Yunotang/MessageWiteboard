@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "Message": {
+      "title": "Message",
+      "description": "A message or sticky note on the whiteboard",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "The content of the message" },
+        "authorId": { "type": "string", "description": "ID of the user who created it" },
+        "authorName": { "type": "string", "description": "Name of the author" },
+        "color": { "type": "string", "description": "Color of the sticky note", "enum": ["bg-yellow-200", "bg-pink-200", "bg-blue-200", "bg-green-200", "bg-purple-200"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["text", "authorId", "authorName", "color", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Collection of all whiteboard messages"
+    }
+  }
+}

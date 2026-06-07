@@ -1,0 +1,8 @@
+{
+  "name": "學員回饋板",
+  "description": "一個提供學員留言、敲碗或回饋的共享便利貼空間",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
