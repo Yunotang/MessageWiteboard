@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, User } from 'firebase/auth';
 import { auth } from './lib/firebase';
 import { Whiteboard } from './components/Whiteboard';
 import { MessageSquarePlus, LogOut, LogIn } from 'lucide-react';
@@ -15,6 +15,11 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 從重導向登入返回時，捕捉可能的錯誤（成功的話會由 onAuthStateChanged 處理）
+    getRedirectResult(auth).catch((error) => {
+      console.error('Redirect sign in error', error);
+    });
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       setLoading(false);
@@ -26,8 +31,21 @@ export default function App() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error('Sign in error', error);
+    } catch (error: any) {
+      // 彈窗在 GitHub Pages 上常因瀏覽器 COOP／第三方 Cookie 政策而閃退，
+      // 這些情況自動退回整頁重導向登入。
+      const fallbackCodes = [
+        'auth/popup-blocked',
+        'auth/popup-closed-by-user',
+        'auth/cancelled-popup-request',
+        'auth/operation-not-supported-in-environment',
+        'auth/internal-error',
+      ];
+      if (fallbackCodes.includes(error?.code)) {
+        await signInWithRedirect(auth, provider);
+      } else {
+        console.error('Sign in error', error);
+      }
     }
   };
 
